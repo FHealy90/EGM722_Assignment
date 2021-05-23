@@ -9,4 +9,4 @@ dependencies:
   - notebook=6.2.0
   - rasterio=1.2.0
   - rasterstats=0.14.0
-prefix: C:\Users\e16006469\Anaconda3\envs\egm722
+prefix: C:\EGM_722\egm722\Project
