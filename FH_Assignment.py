@@ -1,25 +1,27 @@
 # The print function allows us to print messages and information to the screen
-print ( "Hello and welcome to my assignment for EGM722 - Programming for GIS and Remote Sensing" 
+print ( "Hello and welcome to my assignment for EGM722 - Programming for GIS and Remote Sensing"
         "Designated Sites such as Special Areas of Conservation (SAC) 'and' Special Protection Areas"
         "ensure the adequate conservation of habitats where many of our plants and animals live."
-        "The following code will review SAC and SPA data")
+        "The following code will review SAC and SPA data" )
 
 # First  import geopandas and load the data:
 import geopandas as gpd
 
-sac_data = gpd.read_file('C:\EGM_722\egm722\project\data_files/sac_ITM.shp') #you will need to create your own file path here
-print(sac_data.head())
-spa_data = gpd.read_file('C:\EGM_722\egm722\project\data_files/spa_ITM.shp') #you will need to create your own file path here
-print(spa_data.head())
+sac_data = gpd.read_file (
+    'C:\EGM_722\egm722\project\data_files/sac_ITM.shp' )  # you will need to create your own file path here
+print ( sac_data.head () )
+spa_data = gpd.read_file (
+    'C:\EGM_722\egm722\project\data_files/spa_ITM.shp' )  # you will need to create your own file path here
+print ( spa_data.head () )
 # The data is stored in a table (a GeoDataFrame), much like the attribute table in ArcMap.
 # Next, you can discover how many rows of each feature there is.
 # This will display the numbers of SACs and SPAs in Northern Ireland
-rows, cols = sac_data.shape # get the number of rows in the table,
-                            # this gives you the count of the SAC features in Northern Ireland
-print('Number of SAC features: {}'.format(rows))
-rows, cols = spa_data.shape # get the number of rows in the table,
-                            # this gives you the count of the SPA features in Northern Ireland
-print('Number of SPA features: {}'.format(rows))
+rows, cols = sac_data.shape  # get the number of rows in the table,
+# this gives you the count of the SAC features in Northern Ireland
+print ( 'Number of SAC features: {}'.format ( rows ) )
+rows, cols = spa_data.shape  # get the number of rows in the table,
+# this gives you the count of the SPA features in Northern Ireland
+print ( 'Number of SPA features: {}'.format ( rows ) )
 # _______________________________________________________________________________________________________________________
 #Convert csv file to shapefiles. Here Historical Land Use for Northern Ireland will be investigated and
 #converted into a shapefile
