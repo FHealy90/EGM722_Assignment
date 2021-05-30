@@ -28,6 +28,7 @@ print ( 'Number of SPA features: {}'.format ( rows ) )
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Point
+import cartopy.crs as ccrs
 
 df = pd.read_csv('C:\EGM_722\egm722\Project\Data_Files\Historical_Landuse_Dataset.csv')
 
@@ -47,8 +48,8 @@ gdf.set_crs("EPSG:2157", inplace=True) # This sets the coordinate reference syst
                                        # Irish Transverse Mercator lat/lon
 
 print(gdf)
-gdf.to_file ('Historical_Landuse_Dataset.shp') import cartopy.crs as ccrs
-# Writes it to a shapefile
+gdf.to_file ('Historical_Landuse_Dataset.shp')
+# Writes the csv into to a shapefile
 # _____________________________________________________________________________________________________________
 # This allows the use of figures interactively
 import geopandas as gpd
@@ -172,7 +173,7 @@ myFig.savefig( 'map.png', bbox_inches='tight', dpi=300 )
 # You need to get the conifer forestry from the raster layer
 # and convert it to a shapefile as there is no shapefile data
 # avaialable for forestry in Northern Ireland
-%matplotlib notebook
+
 
 import rasterio as rio
 import matplotlib.pyplot as plt
@@ -193,27 +194,30 @@ import sys
 gdal.UseExceptions()
 
 # Get raster datasource
+src = 'src_filename'
+
 src_ds = gdal.Open( "LCM2015_Aggregate_100m.tif" )
 if src_ds is None:
-    print 'Unable to open %s' % src_filename
+    print ('Unable to open {}'.format('src_filename'))
     sys.exit(1)
 
 try:
     srcband = src_ds.GetRasterBand(3)
-except RuntimeError, e:
+except RuntimeError as e:
 # for example, try GetRasterBand(2)
-    print 'Band ( %i ) not found' % band_num
-    print e
+    print ('Band ( %i ) not found')
+    print (e)
     sys.exit(1)
 
 # Create output datasource
-dst_layername = "Conifer_Forest_Polygonied"
+dst_layername = "Conifer_Forest_Polygonized"
 drv = ogr.GetDriverByName("ESRI Shapefile")
-dst_ds = drv.CreateDataSource( dst_layername + "Conifer_Forest_Polygonied.shp" )
+dst_ds = drv.CreateDataSource( dst_layername + "Conifer_Forest_Polygonized.shp" )
 dst_layer = dst_ds.CreateLayer(dst_layername, srs = None )
 
 gdal.Polygonize( srcband, None, dst_layer, -1, [], callback=None )
 #_____________________________________________________________________________________________________________
+
 #Create a buffer from polygonized features
 import ogr, os
 
@@ -221,7 +225,7 @@ def createBuffer(inputfn, outputBufferfn, bufferDist):
     inputds = ogr.Open(inputfn)
     inputlyr = inputds.GetLayer()
 
-    shpdriver = ogr.GetDriverByName('ESRI Shapefile')
+    shpdriver = ogr.GetDriverByName('Conifer_Forest_Polygonized')
     if os.path.exists(outputBufferfn):
         shpdriver.DeleteDataSource(outputBufferfn)
     outputBufferds = shpdriver.CreateDataSource(outputBufferfn)
@@ -241,14 +245,14 @@ def main(inputfn, outputBufferfn, bufferDist):
     createBuffer(inputfn, outputBufferfn, bufferDist)
 
 
-if __name__ == "__Broadleaf woodland__":
+if __name__ == "__Conifer Forest__":
     inputfn = 'Conifer_Forest_Polygonied.shp'
     outputBufferfn = '3km_Conifer_Forest_Polygonied.shp'
     bufferDist = 3000.0
 
     main(inputfn, outputBufferfn, bufferDist)
 #_____________________________________________________________________
-#Select SACs and SPAs that are located within 3km buffer from coniferous and broadleaf forest
+#Select SACs and SPAs that are located within 3km buffer from coniferous forest
 import numpy as np
 
 from matplotlib.widgets import PolygonSelector
@@ -334,19 +338,4 @@ if __name__ == '__main__':
     # After figure is closed print the coordinates of the selected points
     print('\nSelected points:')
     print(selector.xys[selector.ind])
-#________________________________________________________________________________________
-# Rasterise point and polygon data
-import rasterio.features # we have imported rasterio as rio,
-                         # so this will be rio.features (and rasterio.features)
-shapes = list(zip(counties['geometry'], counties['COUNTY_ID']))
-
-county_mask = rio.features.rasterize(shapes=shapes, fill=0,
-                                     out_shape=landcover.shape, transform=affine_tfm)
-
-shapes = list(zip(counties['geometry'], counties['COUNTY']))
-
-spa_data_mask = rio.features.rasterize(shapes=shapes, fill=0,
-                                     out_shape=spa_data.shape, transform=affine_tfm)
-
-plt.figure()
-plt.imshow(county_mask) # To visualize the rasterized output
+# Congratulations, you are now finished coding________________________________________________________________________________________
